@@ -1,6 +1,6 @@
 spring:
   redis:
     port: 6379
-    host: 47.100.45.101
+    host: redis地址ip
 server:
   port: 80

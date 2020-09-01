@@ -25,6 +25,7 @@ public class RedisController {
     public void testUnLock() throws InterruptedException {
         String s = Thread.currentThread().getName();
         if (num > 0) {
+            //System.out.println(".........");
             System.out.println(s + "=>排号成功，号码是：" + num);
             num--;
         } else {
@@ -38,19 +39,29 @@ public class RedisController {
     @GetMapping("testLock")
     public void testLock() throws InterruptedException {
         Lock lock = redisLockRegistry.obtain("lock");
-        boolean isLock = lock.tryLock(1, TimeUnit.SECONDS);
+
+        boolean isLock = lock.tryLock(5, TimeUnit.SECONDS);//这里是等待获取锁的意思，5秒还没拿到就放弃
         String s = Thread.currentThread().getName();
         if (num > 0 && isLock) {
             System.out.println(s + "=>排号成功，号码是：" + num);
-            num--;
-            if (num == 18) {
+             /* if (num == 18) {
                 throw new RuntimeException("....");
-            }
-
+                //这里可以模拟测试锁在redis的记录
+            }*/
+            num--;
+            lock.unlock();
         } else {
             System.out.println(s + "=>排号失败,号码已经被抢光");
         }
-        lock.unlock();
+
+    }
+
+    /**
+     *
+     */
+    @GetMapping("getNum")
+    public void getNum() {
+
     }
 
 }
